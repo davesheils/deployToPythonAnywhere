@@ -73,7 +73,8 @@ def create():
     # return newItem,201
     return jsonify(stockItem),201
     # return "Post nextID = " + str(nextID)
-    # curl -i -H  "Content-Type:application/json" -X POST -d '{"Type":"CD","Title":"Londonst":"The Clash","Genre":"Punk","Quantity":7,"Price":15.99}' http://127.0.0.1:5000/stock
+    # curl -i -H  "Content-Type:application/json" -X POST -d '{"Type":"LP","Title":"In the Land of Grey and Pink","Artist":"Caravan","Genre":"Progressive/Jazz Rock","Quantity":7,"Price":24.99}' http://davidsheils.pythonanywhere.com/stock
+
 
 # UPDATE with ['PUT']
 @app.route('/stock/<int:id>', methods = ['PUT'])
@@ -102,8 +103,8 @@ def update(id):
     if 'Type' in reqJSON and type(reqJSON['Type']) is str:
         foundItem['Type'] = reqJSON['Type']
     return jsonify(foundItem)
-
-    # return "Update " + str(id)
+    # Updating with curl
+    # curl -i -H  "Content-Type:application/json" -X PUT -d '{"Genre":"Alternative/Punk"}' http://davidsheils.pythonanywhere.com/stock/6
 
 # DELETE with ['DELETE']
 @app.route('/stock/<int:id>', methods = ['DELETE'])
@@ -113,9 +114,8 @@ def delete(id):
         abort(404)
     stock.remove(foundItems[0])
     return jsonify( {'result':'true'})
-
-   # return "Delete " + str(id)
-
+    # example of delete with curl
+    # curl -X DELETE http://davidsheils.pythonanywhere.com/stock/2
 
 if __name__ == '__main__' :
     app.run(debug= True)
