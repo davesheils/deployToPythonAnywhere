@@ -5,7 +5,7 @@
 # Building a simple rest server
 
 
-from flask import Flask, jsonify,  request, abort, make_response
+from flask import Flask, jsonify,  request, abort, make_response, render_template
 import json
 
 # from flask_cors import CORS # review if this is necessary
@@ -15,19 +15,19 @@ app = Flask(__name__, static_url_path='',static_folder = '.')
 # create python list of JSON objects 
 
 stock = [
-    {"id":1,"Type":"Book","Title":"Starve Acre","Artist":"Andrew Michael Hurley","Genre":"Horror","Quantity":25,"Price":15.99},
-    {"id":2,"Type":"CD","Title":"Path: An Ambient Journey from Windham Hill","Artist":"Various Artists","Genre":"Ambient/New Age","Quantity":10,"Price":4.95},
-    {"id":3,"Type":"CD","Title":"The Freewheelin' Bob Dylan","Artist":"Bob Dylan","Genre":"Folk/Folk-Rock","Quantity":30,"Price":9.99},
-    {"id":4,"Type":"Book","Title":"The Milkman","Artist":"Anna Burns","Genre":"Literature","Quantity":12,"Price":8.99},
-    {"id":5,"Type":"Vinyl LP","Title":"Mark Hollis","Artist":"Mark Hollis","Genre":"Alternative","Quantity":5,"Price":24.99}
+    {"id":1,"Type":"Book","Title":"Starve Acre","Artist_Author":"Andrew Michael Hurley","Genre":"Horror","Quantity":25,"Price":15.99,"Discogs_GoodReadsID":""},
+    {"id":2,"Type":"CD","Title":"Path: An Ambient Journey from Windham Hill","Artist_Author":"Various Artists","Genre":"Ambient/New Age","Quantity":10,"Price":4.95,"Discogs_GoodReadsID":""},
+    {"id":3,"Type":"CD","Title":"The Freewheelin' Bob Dylan","Artist_Author":"Bob Dylan","Genre":"Folk/Folk-Rock","Quantity":30,"Price":9.99,"Discogs_GoodReadsID":""},
+    {"id":4,"Type":"Book","Title":"The Milkman","Artist_Author":"Anna Burns","Genre":"Literature","Quantity":12,"Price":8.99,"Discogs_GoodReadsID":""},
+    {"id":5,"Type":"Vinyl LP","Title":"Mark Hollis","Artist_Author":"Mark Hollis","Genre":"Alternative","Quantity":5,"Price":24.99,"Discogs_GoodReadsID":""}
 ]
 
-# ID to keep track of cars. Will be incremented when stock items are added
+
 nextID  = 6
 
 @app.route('/')
-def index():
-    return "<i>Hello, Customers!</i>"
+def home():
+    return render_template("home.html")
 
 
 # CRUD Methods

@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+  <title>Book and Music Store - Administrator Page</title>
+
+<!--<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous"> -->
+
+<link rel="stylesheet" type = "text/css" href="myCSS.css">
+
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+        
+<script>
+
+    function showCreate()
+    {
+        console.log("function showCreate() called");
+        // Shows form, create botton and create label (so that instructions read "Create an Item")
+        //Hide Create button and table
+        document.getElementById("showCreateButton").style.display="none";
+        document.getElementById("stockTable").style.display="none";
+        // Show update form
+        document.getElementById("createUpdateForm").style.display="block";
+        // Show Create Button and word (lower)
+        document.getElementById("doCreateButton").style.display="block";
+        document.getElementById("createLabel").style.display="inline"; // note display = inline
+        // Hide Update Button and word (lower)
+        document.getElementById("doUpdateButton").style.display="none";
+        document.getElementById("updateLabel").style.display="none";
+    }
+
+    function showUpdate(buttonElement)
+    {
+        console.log("function showUpdate() called");
+        
+        //Hide Create button and table
+        document.getElementById("showCreateButton").style.display="none";
+        document.getElementById("stockTable").style.display="none";
+        // Show update form
+        document.getElementById("createUpdateForm").style.display="block";
+        // hide Create Button and word (lower)
+        document.getElementById("doCreateButton").style.display="none";
+        document.getElementById("createLabel").style.display="none"; 
+        // SHOW Update Button and word (lower)
+        document.getElementById("doUpdateButton").style.display="block";
+        document.getElementById("updateLabel").style.display="inline";// note display = inline
+        var rowElement = buttonElement.parentNode.parentNode;
+        var item = getItemFromRow(rowElement);
+        console.log(item);
+        populateFormWithItem(item);
+    }
+
+    function doCreate()
+    {
+        console.log("*** Do create called");
+
+        var item ={}; // create item object
+        // using query selector to assign data to object attributes
+        var form =document.getElementById("createUpdateForm");
+        // item.id = form.querySelector('input[name="id"]').value
+        item.Type = form.querySelector('select[name="Type"]').value
+        item.Title = form.querySelector('input[name="Title"]').value
+        item.Artist_Author = form.querySelector('input[name="Artist_Author"]').value
+        item.Genre = form.querySelector('input[name="Genre"]').value
+        item.Quantity = form.querySelector('input[name="Quantity"]').value
+        item.Price = form.querySelector('input[name="Price"]').value
+        item.Discogs_GoodReadsID = form.querySelector('input[name="Discogs_GoodReadsID"]').value
+        //console.log(JSON.stringify(item));
+        createItem(item);
+        clearForm();
+        showViewAll();
+        getAll();
+        document.getElementById("doCreateButton").style = "display:none";
+        document.getElementById("createLabel").style = "display:none";
+    }
+
+    function showViewAll()
+    {
+                // Show Create button and table
+        document.getElementById("showCreateButton").style.display="block";
+        document.getElementById("stockTable").style.display="block";
+        // Show update form
+        document.getElementById("createUpdateForm").style.display="none";
+    }
+
+    function clearForm()
+    {
+        //clears data in the form
+        // uses querySelector to find the inputs
+
+        var form = document.getElementById("createUpdateForm");
+
+        form.querySelector('input[name="reg"]').disabled = false;
+        form.querySelector('input[name="reg"]').value = '';
+        form.querySelector('select[name="make"]').value = '';
+        form.querySelector('input[name="model"]').value = '';
+        form.querySelector('input[name="price"]').value = '';
+    }
+    function addItemToTable(item)
+    {
+        var tableElement = document.getElementById("stockTableBody");
+        // Add row
+        var rowElement = tableElement.insertRow(-1);
+        // Add cells and populate from data
+        // set attributes from Item object
+        var cell0 = rowElement.insertCell(0);
+        cell0.innerHTML = item.id;        
+        var cell1 = rowElement.insertCell(1);
+        cell1.innerHTML = item.Type;
+        var cell2 = rowElement.insertCell(2);
+        cell2.innerHTML = item.Title;
+        var cell3 = rowElement.insertCell(3);
+        cell3.innerHTML = item.Artist_Author;
+        var cell4 = rowElement.insertCell(4);
+        cell4.innerHTML = item.Genre;
+        var cell5 = rowElement.insertCell(5);
+        cell5.innerHTML = item.Quantity;
+        var cell6 = rowElement.insertCell(6);
+        cell6.innerHTML = item.Price;
+        var cell7 = rowElement.insertCell(7);
+        cell7.innerHTML = item.Discogs_GoodReadsID;
+        // add buttons to the row
+        var cell8 = rowElement.insertCell(8);
+        cell8.innerHTML = '<button onClick = "showUpdate(this)">Update</button>';
+        var cell9 = rowElement.insertCell(9);
+        cell9.innerHTML = '<button onClick = "deleteItem(this)">Delete</button>';
+        rowElement.setAttribute('id', item.id);
+    }
+
+    function getItemFromRow(rowElement)
+    {
+      // does what it says, in response to update button been pressed
+      var item ={};
+      item.id = rowElement.cells[0].firstChild.textContent;
+      item.Type = rowElement.cells[1].firstChild.textContent;
+      item.Title = rowElement.cells[2].firstChild.textContent;
+      item.Artist_Author = rowElement.cells[3].firstChild.textContent;
+      item.Genre = rowElement.cells[4].firstChild.textContent;
+      item.Quantity = rowElement.cells[5].firstChild.textContent;
+      item.Price = rowElement.cells[6].firstChild.textContent;
+      item.Discogs_GoodReadsID = rowElement.cells[7].firstChild.textContent;
+      return item;
+      console.log(item);
+    }
+
+    function populateFormWithItem(item)
+    {
+      console.log("populateFormWithItem called" + item.id);
+      var form = document.getElementById("createUpdateForm");
+      form.querySelector('input[name = "id"]').disabled = true;
+      form.querySelector('select[name = "Type"]').value = item.Type;
+      form.querySelector('input[name = "Title"]').value = item.Title;
+      form.querySelector('input[name = "Artist_Author"]').value = item.Artist_Author;
+      form.querySelector('input[name = "Genre"]').value = item.Genre;
+      form.querySelector('input[name = "Quantity"]').value = item.Quantity;
+      form.querySelector('input[name = "Price"]').value = item.Price;
+      form.querySelector('input[name = "Discogs_GoodReadsID"]').value = item.Discogs_GoodReadsID;
+    }
+
+    function getItemFromForm()
+    {
+      var form = document.getElementById('createUpdateForm');
+      var item = {};
+      var form =document.getElementById("createUpdateForm");
+      item.id = form.querySelector('input[name="id"]').value
+      item.Type = form.querySelector('select[name="Type"]').value
+      item.Title = form.querySelector('input[name="Title"]').value
+      item.Artist_Author = form.querySelector('input[name="Artist_Author"]').value
+      item.Genre = form.querySelector('input[name="Genre"]').value
+      item.Quantity = parseInt(form.querySelector('input[name="Quantity"]').value)
+      item.Price = parseFloat(form.querySelector('input[name="Price"]').value)
+      item.Discogs_GoodReadsID = form.querySelector('input[name="Discogs_GoodReadsID"]').value
+      // console.log(JSON.stringify(item));
+      return item;
+    }
+
+// CRUD functions: Interacting with Server to get data from server
+
+function getAll(){
+            // This function expanded to get data from server 
+            // and redraw table
+            console.log("getAll called");
+            $.ajax({    
+                "url": "http://127.0.0.1:5000/stock",
+                "method":"GET",
+                "data":"",
+                "dataType": "JSON",
+                "success":function(stock)
+                    {
+                        // console.log(stock);
+                        // return();
+                        // populateTable(item);
+                        $("#stockTableBody").empty(); // To clear contents of table body
+                        for (item of stock)
+                        {
+                          console.log(item);
+                          addItemToTable(item);
+                        }
+                    },
+                "error":function(xhr,status,error){console.log("error: "+status+" msg:"+error);
+                }
+                });
+            }
+
+function createItem(item){
+            
+            $.ajax({    
+                "url": "http://127.0.0.1:5000/stock",
+                "method":"POST",
+                "data":JSON.stringify(item),
+                "dataType": "JSON",
+                contentType: "application/json; charset=utf-8",
+                "success":function(result)
+                    {
+                        console.log(result);
+                    },
+                "error":function(xhr,status,error){console.log("error: "+status+" msg:"+error);
+                }
+                });
+            }
+
+function updateItem(){
+            var item = getItemFromForm();
+            var rowElement = document.getElementById(item.id);
+            // console.log(item["id"]);
+            $.ajax({
+            "url": "http://127.0.0.1:5000/stock/"+encodeURI(item.id),
+            "method":"PUT",
+            // "data":JSON.stringify(item),
+            "data":item,
+            "dataType": "JSON",
+            contentType: "application/json; charset=utf-8",
+            "success":function(result){
+                    console.log(result);
+                    // document.getElementById("output").innerText = JSON.stringify(result);
+                    clearForm();
+                    showViewAll();
+                    document.getElementById("doUpdateButton").style = "display:none";
+                    document.getElementById("updateLabel").style = "display:none";
+                    // redraw table with updated item array
+                    getall();
+            },
+            "error":function(xhr,status,error){
+                    console.log("error: "+status+" msg:"+error);
+            }
+        });
+    }
+
+function deleteItem(r){
+      console.log("deleteItem called");
+      var id = r.parentNode.parentNode.getAttribute('id');
+      console.log(id);
+      item = {"id":id};
+      $.ajax({    
+            "url": "http://127.0.0.1:5000/stock/"+encodeURI(item.id),
+            "method":"DELETE",
+            "data":JSON.stringify(item),
+            "dataType": "JSON",
+            contentType: "application/json; charset=utf-8",
+            "success":function(result)
+                {
+                  console.log(result);
+                  // document.getElementById("output").innerHTML = JSON.stringify(result);
+                  getAll();
+                },
+            "error":function(xhr,status,error){console.log("error: "+status+" msg:"+error);
+            }
+        });
+    }
+
+</script>
+</head>
+
+<body onload="getAll()"></body>
+<div class = "header">
+<h1>Not-so secret Book and Music Store</h1>
+  <div class = "menu">
+    <ul>
+      <li>Home</li>
+      <li>View all Stock Items</li>
+      <li>View Books</li>
+      <li>View CDS/LPs</li>
+    </ul>
+  </div>
+</div>
+
+<div>
+  <table class = "table" id="stockTable">
+    <thead id="stockTableHead">
+      <!-- it would be great to adapt this so that the headings woudl be created on the dependeing on the data
+      used to populate the table-->
+      <tr>
+        <th>Stock Item number (id)</th> <!-- This could be hidden-->
+        <th>Type (Format)</th> 
+        <th>Title</th>
+        <th>Artist or Author(s)</th> <!-- could this be Artits or Author depending whether books or music is selected?-->
+        <th>Genre</th>
+        <th>Quantity in Stock</th>
+        <th>Price per Unit</th>
+        <th>Discogs/GoodReadsID</th> <!-- This could be hidden-->
+        <th>Update Item Details</th> <!-- Prefer is this were not HTML buttons-->
+        <th>Delete Item fom Stock</th> <!-- Prefer is this were not HTML buttons-->
+      </tr>
+    </thead>
+    <tbody id = "stockTableBody">
+      
+  <!-- Stock table will be populated from the getALl() -->
+
+  </table>
+</div>
+
+<h2><span id = "createLabel" style = "display: none">Add Item To Stock List</span><span id ="updateLabel" style ="display:none" >Edit Item Details</span></h2>
+
+<div class = "form-group"  id ="createUpdateForm" style="display: none">
+    <form id = "form">
+    <fieldset>
+    <!-- The following to be visible only when update button is called -->  
+    <input type = "hidden" class = "form-control" type ="text" name = "id" placeholder = "stock ID number"/><br>  
+    <select class = "form-control" name = "Type" required>
+          <option value = "">Select Type of item you wish to add from the drop down options:</option>
+          <option value = "Book">Book</option>
+          <option value = "CD">CD</option>
+          <option value = "Vinyl LP">Vinyl LP</option>
+          <option value = "DVD">DVD</option>
+          <option value = "Blu-ray">Blu-ray</option>
+          <option value = "Game">Game</option>
+          </select> 
+          <br>
+    <input class = "form-control" type ="text" name = "Title" placeholder = "Enter title of work" required/><br>      
+    <input class = "form-control" type = "text" name = "Artist_Author" placeholder = "Enter Author or Artist" required><br>
+    <!-- Ideally, Genre would be selected from a drop down menu. The options presented to the
+    user would themselves be filtered depending on whether the person had selected
+    a book, game or a music based item in first drop down-->
+    <input class = "form-control" type = "text" name = "Genre" placeholder = "Enter Genre of item to be added to stock" required><br>
+    <input class = "form-control" type = "text" name = "Quantity" placeholder = "Enter quantity of item to be added to stock" required><br>
+    <input class = "form-control" type = "text" name = "Price" placeholder = "Enter unit price to be added to stock" required><br>
+    <input class = "form-control" type = "text" name = "Discogs_GoodReadsID" placeholder = "Enter Discogs or GoodReads ID available (not required)"><br>
+    <!-- Moved Create/Update buttons into the form body to enable HTML form validation-->  
+    <span><button id = "doCreateButton" onClick = "doCreate()" style = "display:none">Create</button></span>
+    <span><button id = "doUpdateButton" onClick = "updateItem()" style = "display:none">Update</button></span>
+    <!-- The following might be used to provide feedback if, say price or quantity are non numerical values-->
+      
+  
+  </fieldset>
+  </form>
+  </div>
+
+<div>
+  <button id = "showCreateButton" onClick ="showCreate()">Add New Item</button>
+</div>
+
+
+<div class="footer">
+  <p>Web layout adapted from <a href = "https://www.w3schools.com/css/css_rwd_intro.asp" target="_blank">w3Schools.com</a></p>
+  <p>Designed for Web Applications Project, Spring 2019 and repurposed for Data Representaion Big Project, Autumn 2019</p>
+</div>
+
+</body>
+
