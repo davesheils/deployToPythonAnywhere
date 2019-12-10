@@ -15,122 +15,119 @@
         
 <script>
 
-    function showCreate()
+  function showCreate()
     {
-        console.log("function showCreate() called");
-        // Shows form, create botton and create label (so that instructions read "Create an Item")
-        //Hide Create button and table
-        document.getElementById("showCreateButton").style.display="none";
-        document.getElementById("stockTable").style.display="none";
-        // Show update form
-        document.getElementById("createUpdateForm").style.display="block";
-        // Show Create Button and word (lower)
-        document.getElementById("doCreateButton").style.display="block";
-        document.getElementById("createLabel").style.display="inline"; // note display = inline
-        // Hide Update Button and word (lower)
-        document.getElementById("doUpdateButton").style.display="none";
-        document.getElementById("updateLabel").style.display="none";
+      console.log("function showCreate() called");
+      // Shows form, create botton and create label (so that instructions read "Create an Item")
+      //Hide Create button and table
+      document.getElementById("showCreateButton").style.display="none";
+      document.getElementById("stockTable").style.display="none";
+      // Show update form
+      document.getElementById("createUpdateForm").style.display="block";
+      // Show Create Button and word (lower)
+      document.getElementById("doCreateButton").style.display="block";
+      document.getElementById("createLabel").style.display="inline"; // note display = inline
+      // Hide Update Button and word (lower)
+      document.getElementById("doUpdateButton").style.display="none";
+      document.getElementById("updateLabel").style.display="none";
     }
 
-    function showUpdate(buttonElement)
+  function showUpdate(buttonElement)
     {
-        console.log("function showUpdate() called");
-        
-        //Hide Create button and table
-        document.getElementById("showCreateButton").style.display="none";
-        document.getElementById("stockTable").style.display="none";
-        // Show update form
-        document.getElementById("createUpdateForm").style.display="block";
-        // hide Create Button and word (lower)
-        document.getElementById("doCreateButton").style.display="none";
-        document.getElementById("createLabel").style.display="none"; 
-        // SHOW Update Button and word (lower)
-        document.getElementById("doUpdateButton").style.display="block";
-        document.getElementById("updateLabel").style.display="inline";// note display = inline
-        var rowElement = buttonElement.parentNode.parentNode;
-        var item = getItemFromRow(rowElement);
-        console.log(item);
-        populateFormWithItem(item);
+      console.log("function showUpdate() called");
+      //Hide Create button and table
+      document.getElementById("showCreateButton").style.display="none";
+      document.getElementById("stockTable").style.display="none";
+      // Show update form
+      document.getElementById("createUpdateForm").style.display="block";
+      // hide Create Button and word (lower)
+      document.getElementById("doCreateButton").style.display="none";
+      document.getElementById("createLabel").style.display="none"; 
+      // SHOW Update Button and word (lower)
+      document.getElementById("doUpdateButton").style.display="block";
+      document.getElementById("updateLabel").style.display="inline";// note display = inline
+      var rowElement = buttonElement.parentNode.parentNode;
+      var item = getItemFromRow(rowElement);
+      console.log(item);
+      populateFormWithItem(item);
     }
 
-    function doCreate()
+  function doCreate()
     {
-        console.log("*** Do create called");
-
-        var item ={}; // create item object
-        // using query selector to assign data to object attributes
-        var form =document.getElementById("createUpdateForm");
-        // item.id = form.querySelector('input[name="id"]').value
-        item.Type = form.querySelector('select[name="Type"]').value
-        item.Title = form.querySelector('input[name="Title"]').value
-        item.Artist_Author = form.querySelector('input[name="Artist_Author"]').value
-        item.Genre = form.querySelector('input[name="Genre"]').value
-        item.Quantity = form.querySelector('input[name="Quantity"]').value
-        item.Price = form.querySelector('input[name="Price"]').value
-        item.Discogs_GoodReadsID = form.querySelector('input[name="Discogs_GoodReadsID"]').value
-        //console.log(JSON.stringify(item));
-        createItem(item);
-        clearForm();
-        showViewAll();
-        getAll();
-        document.getElementById("doCreateButton").style = "display:none";
-        document.getElementById("createLabel").style = "display:none";
+      console.log("*** Do create called");
+      var item ={}; // create item object
+      // using query selector to assign data to object attributes
+      var form =document.getElementById("createUpdateForm");
+      // item.id = form.querySelector('input[name="id"]').value
+      item.Type = form.querySelector('select[name="Type"]').value
+      item.Title = form.querySelector('input[name="Title"]').value
+      item.Artist_Author = form.querySelector('input[name="Artist_Author"]').value
+      item.Genre = form.querySelector('input[name="Genre"]').value
+      item.Quantity = form.querySelector('input[name="Quantity"]').value
+      item.Price = form.querySelector('input[name="Price"]').value
+      item.Discogs_GoodReadsID = form.querySelector('input[name="Discogs_GoodReadsID"]').value
+      //console.log(JSON.stringify(item));
+      createItem(item);
+      clearForm();
+      showViewAll();
+      getAll();
+      document.getElementById("doCreateButton").style = "display:none";
+      document.getElementById("createLabel").style = "display:none";
     }
 
-    function showViewAll()
+  function showViewAll()
     {
-                // Show Create button and table
-        document.getElementById("showCreateButton").style.display="block";
-        document.getElementById("stockTable").style.display="block";
-        // Show update form
-        document.getElementById("createUpdateForm").style.display="none";
+      // Show Create button and table
+      document.getElementById("showCreateButton").style.display="block";
+      document.getElementById("stockTable").style.display="block";
+      // Show update form
+      document.getElementById("createUpdateForm").style.display="none";
     }
 
-    function clearForm()
+  function clearForm()
     {
-        //clears data in the form
-        // uses querySelector to find the inputs
-
-        var form = document.getElementById("createUpdateForm");
-
-        form.querySelector('input[name="reg"]').disabled = false;
-        form.querySelector('input[name="reg"]').value = '';
-        form.querySelector('select[name="make"]').value = '';
-        form.querySelector('input[name="model"]').value = '';
-        form.querySelector('input[name="price"]').value = '';
-    }
-    function addItemToTable(item)
-    {
-        var tableElement = document.getElementById("stockTableBody");
-        // Add row
-        var rowElement = tableElement.insertRow(-1);
-        // Add cells and populate from data
-        // set attributes from Item object
-        var cell0 = rowElement.insertCell(0);
-        cell0.innerHTML = item.id;        
-        var cell1 = rowElement.insertCell(1);
-        cell1.innerHTML = item.Type;
-        var cell2 = rowElement.insertCell(2);
-        cell2.innerHTML = item.Title;
-        var cell3 = rowElement.insertCell(3);
-        cell3.innerHTML = item.Artist_Author;
-        var cell4 = rowElement.insertCell(4);
-        cell4.innerHTML = item.Genre;
-        var cell5 = rowElement.insertCell(5);
-        cell5.innerHTML = item.Quantity;
-        var cell6 = rowElement.insertCell(6);
-        cell6.innerHTML = item.Price;
-        var cell7 = rowElement.insertCell(7);
-        cell7.innerHTML = item.Discogs_GoodReadsID;
-        // add buttons to the row
-        var cell8 = rowElement.insertCell(8);
-        cell8.innerHTML = '<button onClick = "showUpdate(this)">Update</button>';
-        var cell9 = rowElement.insertCell(9);
-        cell9.innerHTML = '<button onClick = "deleteItem(this)">Delete</button>';
-        rowElement.setAttribute('id', item.id);
+      //clears data in the form
+      // uses querySelector to find the inputs
+      var form = document.getElementById("createUpdateForm");
+      form.querySelector('input[name="reg"]').disabled = false;
+      form.querySelector('input[name="reg"]').value = '';
+      form.querySelector('select[name="make"]').value = '';
+      form.querySelector('input[name="model"]').value = '';
+      form.querySelector('input[name="price"]').value = '';
     }
 
-    function getItemFromRow(rowElement)
+  function addItemToTable(item)
+    {
+      var tableElement = document.getElementById("stockTableBody");
+      // Add row
+      var rowElement = tableElement.insertRow(-1);
+      // Add cells and populate from data
+      // set attributes from Item object
+      var cell0 = rowElement.insertCell(0);
+      cell0.innerHTML = item.id;        
+      var cell1 = rowElement.insertCell(1);
+      cell1.innerHTML = item.Type;
+      var cell2 = rowElement.insertCell(2);
+      cell2.innerHTML = item.Title;
+      var cell3 = rowElement.insertCell(3);
+      cell3.innerHTML = item.Artist_Author;
+      var cell4 = rowElement.insertCell(4);
+      cell4.innerHTML = item.Genre;
+      var cell5 = rowElement.insertCell(5);
+      cell5.innerHTML = item.Quantity;
+      var cell6 = rowElement.insertCell(6);
+      cell6.innerHTML = item.Price;
+      var cell7 = rowElement.insertCell(7);
+      cell7.innerHTML = item.Discogs_GoodReadsID;
+      // add buttons to the row
+      var cell8 = rowElement.insertCell(8);
+      cell8.innerHTML = '<button onClick = "showUpdate(this)">Update</button>';
+      var cell9 = rowElement.insertCell(9);
+      cell9.innerHTML = '<button onClick = "deleteItem(this)">Delete</button>';
+      rowElement.setAttribute('id', item.id);
+    }
+
+  function getItemFromRow(rowElement)
     {
       // does what it says, in response to update button been pressed
       var item ={};
@@ -146,7 +143,7 @@
       console.log(item);
     }
 
-    function populateFormWithItem(item)
+  function populateFormWithItem(item)
     {
       console.log("populateFormWithItem called" + item.id);
       var form = document.getElementById("createUpdateForm");
@@ -160,7 +157,7 @@
       form.querySelector('input[name = "Discogs_GoodReadsID"]').value = item.Discogs_GoodReadsID;
     }
 
-    function getItemFromForm()
+  function getItemFromForm()
     {
       var form = document.getElementById('createUpdateForm');
       var item = {};
@@ -177,95 +174,99 @@
       return item;
     }
 
-// CRUD functions: Interacting with Server to get data from server
+    // CRUD functions: Interacting with Server to get data from server
 
-function getAll(){
-            // This function expanded to get data from server 
-            // and redraw table
-            console.log("getAll called");
-            $.ajax({    
-                "url": "http://127.0.0.1:5000/stock",
-                "method":"GET",
-                "data":"",
-                "dataType": "JSON",
-                "success":function(stock)
-                    {
-                        // console.log(stock);
-                        // return();
-                        // populateTable(item);
-                        $("#stockTableBody").empty(); // To clear contents of table body
-                        for (item of stock)
-                        {
-                          console.log(item);
-                          addItemToTable(item);
-                        }
-                    },
-                "error":function(xhr,status,error){console.log("error: "+status+" msg:"+error);
-                }
-                });
-            }
-
-function createItem(item){
-            
-            $.ajax({    
-                "url": "http://127.0.0.1:5000/stock",
-                "method":"POST",
-                "data":JSON.stringify(item),
-                "dataType": "JSON",
-                contentType: "application/json; charset=utf-8",
-                "success":function(result)
-                    {
-                        console.log(result);
-                    },
-                "error":function(xhr,status,error){console.log("error: "+status+" msg:"+error);
-                }
-                });
-            }
-
-function updateItem(){
-            var item = getItemFromForm();
-            var rowElement = document.getElementById(item.id);
-            // console.log(item["id"]);
-            $.ajax({
-            "url": "http://127.0.0.1:5000/stock/"+encodeURI(item.id),
-            "method":"PUT",
-            // "data":JSON.stringify(item),
-            "data":item,
-            "dataType": "JSON",
-            contentType: "application/json; charset=utf-8",
-            "success":function(result){
-                    console.log(result);
-                    // document.getElementById("output").innerText = JSON.stringify(result);
-                    clearForm();
-                    showViewAll();
-                    document.getElementById("doUpdateButton").style = "display:none";
-                    document.getElementById("updateLabel").style = "display:none";
-                    // redraw table with updated item array
-                    getall();
-            },
-            "error":function(xhr,status,error){
-                    console.log("error: "+status+" msg:"+error);
-            }
+  function getAll(){
+      // This function expanded to get data from server 
+      // and redraw table
+      host = window.location.origin
+      console.log("getAll called");
+      $.ajax({    
+        "url": host + "/stock",
+        "method":"GET",
+        "data":"",
+        "dataType": "JSON",
+        "success":function(stock)
+          {
+            // console.log(stock);
+            // return();
+            // populateTable(item);
+            $("#stockTableBody").empty(); // To clear contents of table body
+            for (item of stock)
+              {
+              console.log(item);
+              addItemToTable(item);
+              }
+          },
+            "error":function(xhr,status,error){console.log("error: "+status+" msg:"+error);
+          }
         });
+      }
+
+  function createItem(item){
+    host = window.location.origin
+    $.ajax({    
+    "url": host + "/stock",
+    "method":"POST",
+    "data":JSON.stringify(item),
+    "dataType": "JSON",
+    contentType: "application/json; charset=utf-8",
+    "success":function(result)
+        {
+          console.log(result);
+        },
+          "error":function(xhr,status,error){console.log("error: "+status+" msg:"+error);
+        }
+      });
     }
 
-function deleteItem(r){
+  function updateItem(){
+    var host = window.location.origin
+    item = getItemFromForm();
+    var rowElement = document.getElementById(item.id);
+    // console.log(item["id"]);
+    $.ajax({
+      "url": host + "/stock/"+encodeURI(item.id),
+      "method":"PUT",
+      // "data":JSON.stringify(item),
+      "data":item,
+      "dataType": "JSON",
+      contentType: "application/json; charset=utf-8",
+      "success":function(result)
+        {
+          console.log(result);
+          // document.getElementById("output").innerText = JSON.stringify(result);
+          clearForm();
+          showViewAll();
+          document.getElementById("doUpdateButton").style = "display:none";
+          document.getElementById("updateLabel").style = "display:none";
+          // redraw table with updated item array
+          getall();
+        },
+        "error":function(xhr,status,error){
+          console.log("error: "+status+" msg:"+error);
+        }
+      });
+  }
+
+  function deleteItem(r){
+    var host = window.location.origin
       console.log("deleteItem called");
       var id = r.parentNode.parentNode.getAttribute('id');
       console.log(id);
       item = {"id":id};
       $.ajax({    
-            "url": "http://127.0.0.1:5000/stock/"+encodeURI(item.id),
-            "method":"DELETE",
-            "data":JSON.stringify(item),
-            "dataType": "JSON",
-            contentType: "application/json; charset=utf-8",
-            "success":function(result)
-                {
-                  console.log(result);
-                  // document.getElementById("output").innerHTML = JSON.stringify(result);
-                  getAll();
-                },
+        "url": host + "/stock/"+encodeURI(item.id),
+        "method":"DELETE",
+        "data":JSON.stringify(item),
+        "dataType": "JSON",
+        contentType: "application/json; charset=utf-8",
+        "success":function(result)
+          {
+            console.log(result);
+            // document.getElementById("output").innerHTML = JSON.stringify(result);
+              getAll();
+          },
             "error":function(xhr,status,error){console.log("error: "+status+" msg:"+error);
             }
         });
