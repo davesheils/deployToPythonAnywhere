@@ -78,11 +78,7 @@ def update(id):
         foundItem['Price'] = reqJSON['Price']
     if 'Discogs_GoodReadsID' in reqJSON: # and type(reqJSON['Discogs_GoodReadsID']) is str:
         foundItem['Discogs_GoodReadsID'] = reqJSON['Discogs_GoodReadsID']
-    
     values = (foundItem['Type'],foundItem['Title'],foundItem['Artist_Author'],foundItem['Genre'],foundItem['Quantity'],foundItem['Price'],foundItem['Discogs_GoodReadsID'], foundItem['id'])
-        
-    # values = tuple(list(foundItem.values())) # not sure why this does not work here ...
-     
     stockDAO.update(values)
     return jsonify(foundItem)
 

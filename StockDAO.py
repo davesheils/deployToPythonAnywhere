@@ -8,58 +8,88 @@ import dbconfig as cfg
 
 class StockDAO:
     db = ""
+    def initConnectToDB(self):
+        db = mysql.connector.connect(
+            host = cfg.mySQL['host'],
+            user = cfg.mySQL['user'],
+            password = cfg.mySQL['password'],
+            database = cfg.mySQL['database'],
+            pool_name = 'my_connection_pool',
+            pool_size = 10        
+            # auth_plugin='mysql_native_password
+            )
+        return db
+
+    def getConnection(self):
+        db = mysql.connector.connect(
+            pool_name = 'my_connection_pool',
+            )
+        return db
+
     def __init__(self):
-        self.db = mysql.connector.connect(
-        host = cfg.mySQL['host'],
-        user = cfg.mySQL['user'],
-        password = cfg.mySQL['password'],
-        database = cfg.mySQL['database'],
-        auth_plugin='mysql_native_password'
-        )
+       db = self.initConnectToDB()
+       db.close
+
+    def getCursor(self):
+        # checks if database is connected,if no, get new cursor
+        if not self.db.is_connected():
+            self.connectToDB()
+        return self.db.cursor()
 
     def create(self, values):
         # print(values)
-        cursor = self.db.cursor()
+        db = self.getConnection()
+        cursor = db.cursor()
         sql = "insert into stock (Type, Title, Artist_Author, Genre, Quantity, Price, Discogs_GoodReadsID) values (%s, %s,%s, %s, %s, %s, %s)"
         cursor.execute(sql, values)
-        self.db.commit()
-        return cursor.lastrowid
+        db.commit()
+        lastRowID = cursor.lastrowid
+        db.close()
+        return lastRowID
 
     def getAll(self):
-        cursor = self.db.cursor()
+        db = self.getConnection()
+        cursor = db.cursor()
         sql = "select * from stock"
         cursor.execute(sql)
         data = cursor.fetchall()
         stockList =[]
         for row in data:
             stockList.append(self.convertToDictionary(row))
+        db.close()
         return stockList
     
     def getByID(self, id):
-        cursor = self.db.cursor()
+        db = self.getConnection()
+        cursor = db.cursor()
         sql = "select * from stock where id = %s"
         values = (id,)
         cursor.execute(sql,values)
         result = cursor.fetchone()
+        db.close()
         return self.convertToDictionary(result)
 
     def update(self, values):
-        # takes a tuple object
-        cursor = self.db.cursor()
+        db = self.getConnection()
+        cursor = db.cursor()
         sql = "UPDATE stock SET Type = %s, Title = %s, Artist_Author = %s, Genre = %s, Quantity = %s, Price = %s, Discogs_GoodReadsID = %s WHERE id = %s"
         cursor.execute(sql,values)
-        self.db.commit()
+        db.commit()
         # returns a json object, i.e convertToDictionary()
+        db.close()
         return # self.convertToDictionary(values)
     
     def delete(self, id):
-        cursor = self.db.cursor()
+        db = self.getConnection()
+        cursor = db.cursor()
         # likewise
         sql = "delete from stock where id = %s"
         value = (id,)
         cursor.execute(sql, value)
-        self.db.commit()
+        db.commit()
+        db.close()
         print("delete executed")
+        return
     
     def convertToDictionary(self, result):
         cols = ['id', 'Type', 'Title', 'Artist_Author',  'Genre',  'Quantity', 'Price', 'Discogs_GoodReadsID']
