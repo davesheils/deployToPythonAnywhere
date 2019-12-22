@@ -4,7 +4,9 @@
 
 # Building a simple rest server
 
-from flask import Flask, jsonify, request, abort, make_response, render_template
+from flask import Flask, flash, session, url_for, redirect, jsonify, request, abort, make_response, render_template
+import requests
+import secrets
 import json
 from StockDAO import stockDAO
 
@@ -12,10 +14,71 @@ from StockDAO import stockDAO
 
 app = Flask(__name__, static_url_path='',static_folder = '.')
 
+# Login simulation
+# htps://pythonise.com/series/learning-flask/flask-session-object
+# secrets.token_urlsafe(16)
+app.secret_key = "ABCDEFG12345678"
+
+users = [
+        {"username":"admin","password":"pass1"},
+        {"username":"davesheils","password":"pass2"},
+        {"username":"andrewbeatty","password":"pass3"}
+        ]
+
+
 @app.route('/')
 def home():
-    # return "<i>Hello, Customers!</i>"
-    return render_template("home.html")
+    if not 'username' in session:
+        # return "You are not logged in. <br><a href ='/login'></b>click here to log in</b></a>"
+        flash("You are not logged in. Redirecting you to login page.")
+        return redirect(url_for("login"))
+    else:
+        return render_template("home.html", user = session['username'])
+
+@app.route('/more-info', methods=["GET", "POST"])
+def moreInfo():
+    # if not request.json:
+    #    abort(400)
+    # return request.json
+    # req = request.json
+    # id = req['id']
+    # discogs tracklist
+    # render template with data
+    return render_template("more-info.html")
+    # return "id is <b>" + id + "</b>"
+
+
+@app.route('/login')
+def login():
+    return render_template("login.html")
+
+@app.route('/logout')
+def logout():
+    # return render_template("logout.html")
+    session.pop('username', None)
+    flash("You are now logged out")
+    return render_template("logout.html") # which will redirect you to teh login page as you are not logged in!
+    # click to login
+
+@app.route('/sign-in', methods=["GET", "POST"])
+def sign_in():
+    if request.method == "POST":
+        req = request.form 
+        username = req.get("username")
+        password = req.get("password")
+        # require for loop to get list of users and validate
+        for user in users:
+            if username == user["username"] and password == user["password"]:
+                session["username"] = username
+                flash("You are logged in")
+                return redirect(url_for("home"))
+        else:
+            flash("User credentials not valid. Returning you to login screen")
+            return redirect(url_for("login"))
+
+
+
+
 
 # CRUD Methods
 
@@ -27,7 +90,7 @@ def getAll():
 # curl -i http://localhost:5000/stock
 
 # Find stock item by ID
-@app.route('/stock/<int:id>',  methods =['GET', 'POST', 'PUT'])
+@app.route('/stock/<int:id>',  methods =['GET'])
 def findByID(id):
     foundItem =stockDAO.getByID(id)
     return jsonify(foundItem)
@@ -57,7 +120,7 @@ def create():
     
 # UPDATE with ['PUT']
 @app.route('/stock/<int:id>', methods = ['PUT'])
-def update(id):
+def update_item(id):
     foundItem = stockDAO.getByID(id)
     if not foundItem:
         abort(404)

@@ -22,7 +22,7 @@ myCursor.execute("USE davidsheils$shop")
 print("Create table")
 try:
     myCursor.execute("DROP TABLE IF EXISTS stock")
-    myCursor.execute("CREATE TABLE stock(id int AUTO_INCREMENT PRIMARY KEY, Type VARCHAR(15), Title VARCHAR(255), Artist_Author VARCHAR(255), Genre VARCHAR(25), Quantity int, Price double, Discogs_GoodReadsID VARCHAR(25))")
+    myCursor.execute("CREATE TABLE stock(id int AUTO_INCREMENT PRIMARY KEY, Type VARCHAR(15), Title VARCHAR(255), Artist_Author VARCHAR(255), Genre VARCHAR(25), Quantity int, Price double, Discogs_GoodReadsID int)")
 except Error as err:
     print(err)
 
