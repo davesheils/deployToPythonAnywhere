@@ -5,7 +5,7 @@
 # Building a simple rest server
 
 from flask import Flask, flash, session, url_for, redirect, jsonify, request, abort, make_response, render_template
-import requests
+# import requests
 import secrets
 import json
 from StockDAO import stockDAO
