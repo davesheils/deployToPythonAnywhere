@@ -9,22 +9,28 @@ import dbconfig as cfg
 class StockDAO:
     db = ""
     def initConnectToDB(self):
-        db = mysql.connector.connect(
-            host = cfg.mySQL['host'],
-            user = cfg.mySQL['user'],
-            password = cfg.mySQL['password'],
-            database = cfg.mySQL['database'],
-            pool_name = 'my_connection_pool',
-            pool_size = 6
-            # auth_plugin='mysql_native_password
-            )
-        return db
+        try:
+            db = mysql.connector.connect(
+                host = cfg.mySQL['host'],
+                user = cfg.mySQL['user'],
+                password = cfg.mySQL['password'],
+                database = cfg.mySQL['database'],
+                pool_name = 'my_connection_pool',
+                pool_size = 6
+                # auth_plugin='mysql_native_password
+                )
+            return db
+        except:
+            return
 
     def getConnection(self):
-        db = mysql.connector.connect(
+        try:
+            db = mysql.connector.connect(
             pool_name = 'my_connection_pool',
             )
-        return db
+            return db
+        except:
+            return
 
     def __init__(self):
        db = self.initConnectToDB()

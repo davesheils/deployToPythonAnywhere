@@ -29,8 +29,6 @@ users = [
 @app.route('/')
 def home():
     if not 'username' in session:
-        # return "You are not logged in. <br><a href ='/login'></b>click here to log in</b></a>"
-        flash("You are not logged in. Redirecting you to login page.")
         return redirect(url_for("login"))
     else:
         return render_template("home.html", user = session['username'])
@@ -56,9 +54,7 @@ def login():
 def logout():
     # return render_template("logout.html")
     session.pop('username', None)
-    flash("You are now logged out")
-    return render_template("logout.html") # which will redirect you to teh login page as you are not logged in!
-    # click to login
+    return render_template("logout.html") 
 
 @app.route('/sign-in', methods=["GET", "POST"])
 def sign_in():
@@ -75,11 +71,6 @@ def sign_in():
         else:
             flash("User credentials not valid. Returning you to login screen")
             return redirect(url_for("login"))
-
-
-
-
-
 # CRUD Methods
 
 # READ with ['GET']
