@@ -1,6 +1,6 @@
 import mysql.connector
 import dbconfig as cfg
-from StockDAO import stockDAO
+# from StockDAO import stockDAO
 import csv
 
 try:
