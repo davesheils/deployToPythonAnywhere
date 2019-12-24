@@ -5,10 +5,10 @@ import csv
 
 try:
     mydb= mysql.connector.connect(
-        host = 'davidsheils.mysql.pythonanywhere-services.com',
-        user = 'davidsheils',
-        password = 'vqx92ffp',
-        database = 'davidsheils$shop',
+        host = cfg.mySQL['host'],
+        user = cfg.mySQL['user'],
+        password = cfg.mySQL['password'],
+        # database = "datarepresentation",
         # auth_plugin='mysql_native_password'
         )
     myCursor = mydb.cursor()
@@ -30,7 +30,10 @@ try:
         stock = [tuple(line) for line in csv.reader(f)]
         sql = "insert into stock (Type, Title, Artist_Author, Genre, Quantity, Price, Discogs_GoodReadsID) values (%s, %s,%s, %s, %s, %s, %s)"
         for item in stock[1:]: # i.e all tuples in stock except the header line
-            stockDAO.create(item)
+            myCursor.execute(sql, item)
+            mydb.commit()
+            print("created item ", item[1])
+    
 except mysql.connector.Error as err:
     print("Could not create an populate table")
     print(err)
