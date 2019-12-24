@@ -11,10 +11,10 @@ class StockDAO:
     def initConnectToDB(self):
         try:
             db = mysql.connector.connect(
-    		'host':'davidsheils.mysql.pythonanywhere-services.com',
-    		'user':'davidsheils',
-    		'password':'vqx92ffp',
-    		'database':'davidsheils$shop'
+    		'host'='davidsheils.mysql.pythonanywhere-services.com',
+    		'user'='davidsheils',
+    		'password'='vqx92ffp',
+    		'database'='davidsheils$shop'
                 pool_name = 'my_connection_pool',
                 pool_size = 6
                 # auth_plugin='mysql_native_password
