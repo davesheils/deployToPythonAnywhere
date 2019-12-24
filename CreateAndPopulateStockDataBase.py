@@ -5,10 +5,10 @@ import csv
 
 try:
     mydb= mysql.connector.connect(
-        host = cfg.mySQL['host'],
-        user = cfg.mySQL['user'],
-        password = cfg.mySQL['password'],
-        # database = "datarepresentation",
+        host = 'davidsheils.mysql.pythonanywhere-services.com',
+        user = 'davidsheils',
+        password = 'vqx92ffp',
+        database = 'davidsheils$shop',
         # auth_plugin='mysql_native_password'
         )
     myCursor = mydb.cursor()
