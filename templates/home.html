@@ -82,12 +82,9 @@
       getAll();
       document.getElementById("doCreateButton").style = "display:none";
       document.getElementById("createLabel").style = "display:none";
+      // getAll();
     }
 
-  function doUpdate()
-  {
-
-  }
 
   function showViewAll()
     {
@@ -127,41 +124,29 @@
       cell2.innerHTML = item.Title;
       var cell3 = rowElement.insertCell(3);
       cell3.innerHTML = item.Artist_Author;
-      /*
+      
       var cell4 = rowElement.insertCell(4);
-      cell4.innerHTML = item.Genre;
+      cell4.innerHTML = item.Discogs_GoodReadsID;
+      // cell4.style.visibility = 'hidden'
+      /*
       var cell5 = rowElement.insertCell(5);
       cell5.innerHTML = item.Quantity;
       var cell6 = rowElement.insertCell(6);
       cell6.innerHTML = item.Price;
       */
-      var cell7 = rowElement.insertCell(4);
-      cell7.innerHTML = '<button onClick = "">View More Info</button>';;
+      var cell7 = rowElement.insertCell(5);
+      cell7.innerHTML = '<button onClick = "viewMore(this)">View More Info</button>';;
       // add buttons to the row
-      var cell8 = rowElement.insertCell(5);
+      var cell8 = rowElement.insertCell(6);
       cell8.innerHTML = '<button onClick = "showUpdate(this)">Update</button>';
-      var cell9 = rowElement.insertCell(6);
+      var cell9 = rowElement.insertCell(7);
       cell9.innerHTML = '<button onClick = "deleteItem(this)">Delete</button>';
       rowElement.setAttribute('id', item.id);
     }
 
   function getItemFromRow(rowElement)
     {
-      // does what it says, in response to update button been pressed
-      // var item ={};
       id = rowElement.cells[0].firstChild.textContent;
-      /*
-      // original code
-      item.id = rowElement.cells[0].firstChild.textContent;
-      item.Type = rowElement.cells[1].firstChild.textContent;
-      item.Title = rowElement.cells[2].firstChild.textContent;
-      item.Artist_Author = rowElement.cells[3].firstChild.textContent;
-      
-      item.Genre = rowElement.cells[4].firstChild.textContent;
-      item.Quantity = rowElement.cells[5].firstChild.textContent;
-      item.Price = rowElement.cells[6].firstChild.textContent;
-      item.Discogs_GoodReadsID = rowElement.cells[7].firstChild.textContent;
-      */
       console.log(item);      
       return;
     }
@@ -196,6 +181,16 @@
       item.Discogs_GoodReadsID = form.querySelector('input[name="Discogs_GoodReadsID"]').value
       // console.log(JSON.stringify(item));
       return item;
+    }
+
+    function viewMore(buttonElement){
+      console.log("viewMore called")
+      var rowElement = buttonElement.parentNode.parentNode;
+      discogsID = rowElement.cells[4].firstChild.textContent;
+      console.log(discogsID)
+      url  = window.location.origin + "/moreinfo/" + discogsID
+      console.log(url)
+      window.location.href = url
     }
 
     // CRUD functions: Interacting with Server to get data from server
@@ -286,8 +281,9 @@
           showViewAll();
           document.getElementById("doUpdateButton").style = "display:none";
           document.getElementById("updateLabel").style = "display:none";
+          
           // redraw table with updated item array
-          getall()
+          getAll()
         },
         "error":function(xhr,status,error){
           console.log("error: "+status+" msg:"+error);
@@ -329,8 +325,7 @@
       <li><a href ="/">Home</a></li>
       <li><a href ="/logout">Logout</a></li>
       <li><a id = "showCreateButton" onClick ="showCreate()" href="#">Add New Item</a></li>
-	<li>You are logged in as {{user}}</li>
-
+	    <li>You are logged in as {{user}}</li>
     </ul>
   </div>
 </div>
@@ -350,6 +345,7 @@
         <th>Quantity in Stock</th>
         <th>Price per Unit</th>
         -->
+        <th>Discogs Lookup ID</th>
         <th>More Information</th> <!-- This could be hidden-->
         <th>Update Item Details</th> <!-- Prefer is this were not HTML buttons-->
         <th>Delete Item fom Stock</th> <!-- Prefer is this were not HTML buttons-->
@@ -357,7 +353,6 @@
     </thead>
     <tbody id = "stockTableBody">
       
-  <!-- Stock table will be populated from the getALl() -->
 
   </table>
 </div>
@@ -365,7 +360,7 @@
 <h2><span id = "createLabel" style = "display: none">Add Item To Stock List</span><span id ="updateLabel" style ="display:none" >Edit Item Details</span></h2>
 
 <div class = "form-group"  id ="createUpdateForm" style="display: none">
-    
+
     <!-- The following to be visible only when update button is called -->  
     <input class = "form-control" type ="text" name = "id" placeholder = "stock ID number"/><br>  
     <select class = "form-control" name = "Type" required>
@@ -387,11 +382,12 @@
     <input class = "form-control" type = "text" name = "Quantity" placeholder = "Enter quantity of item to be added to stock" required><br>
     <input class = "form-control" type = "text" name = "Price" placeholder = "Enter unit price to be added to stock" required><br>
     <input class = "form-control" type = "text" name = "Discogs_GoodReadsID" placeholder = "Enter Discogs or GoodReads ID available (not required)"><br>
-</div>    
+
+  </div>    
       
-    <span><button id = "doCreateButton" onClick = "doCreate()" style = "display:none">Create</button></span>
-    <span><button id = "doUpdateButton" onClick = "updateItem()" style = "display:none">Update</button></span>
-    
+    <p><a id = "doCreateButton" onClick = "doCreate()" style = "display:none" href="#">Create</a></p>
+    <p><a id = "doUpdateButton" onClick = "updateItem()" style = "display:none" href="#">Update</a></p>
+    <p></p>
 <div class="footer">
   <p>Web layout adapted from <a href = "https://www.w3schools.com/css/css_rwd_intro.asp" target="_blank">w3Schools.com</a></p>
   <p>Designed for Web Applications Project, Spring 2019 and repurposed for Data Representaion Big Project, Autumn 2019</p>

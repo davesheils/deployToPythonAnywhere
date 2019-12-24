@@ -5,10 +5,12 @@
 # Building a simple rest server
 
 from flask import Flask, flash, session, url_for, redirect, jsonify, request, abort, make_response, render_template
-# import requests
 import secrets
 import json
 from StockDAO import stockDAO
+# import discogs and wikipedia python clients
+import discogs_client
+import wikipedia
 
 # from flask_cors import CORS # review if this is necessary
 
@@ -33,17 +35,19 @@ def home():
     else:
         return render_template("home.html", user = session['username'])
 
-@app.route('/more-info', methods=["GET", "POST"])
-def moreInfo():
-    # if not request.json:
-    #    abort(400)
-    # return request.json
-    # req = request.json
-    # id = req['id']
-    # discogs tracklist
-    # render template with data
-    return render_template("more-info.html")
-    # return "id is <b>" + id + "</b>"
+@app.route('/moreinfo/<int:id>')
+def moreInfo(id):
+    d = discogs_client.Client('davesApp/0.1')
+    release = d.release(id)
+    # This needs to be tweaked to ensure correct album summary is returned
+    title = release.title + " (Album)"
+    #  get artist .. bit of parsing required here as artist object is a list
+    artist = str(release.artists[0]).split("'")[1]
+    genres = release.genres 
+    summary = wikipedia.page(title).summary
+    # create tracklist
+    tracklist = release.tracklist
+    return render_template("moreinfo.html", title = title, artist = artist, genres = genres, summary = summary, tracklist = tracklist, user = session['username'])
 
 
 @app.route('/login')
